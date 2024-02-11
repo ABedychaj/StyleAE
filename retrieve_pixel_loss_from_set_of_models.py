@@ -1,19 +1,18 @@
-import os
-import random
-
+import PIL.Image
+import gc
 import numpy as np
-from sklearn.utils import shuffle
+import os
+import pandas as pd
+import pickle
+import random
+import torch
 from datetime import datetime
+from sklearn.utils import shuffle
 from torch import optim
-from ae.utils import load_dataset, save_model, iterate_batches, load_model
+
 from ae.AutoEncoder import AE_single_layer, AE_multiple_layers, InvertibleAE, CholeskyAE, InvOrthogonalAE, DeepAE, \
     relu_loss
-import pandas as pd
-
-import PIL.Image
-import pickle
-import torch
-import gc
+from ae.utils import load_dataset, save_model, iterate_batches, load_model
 
 gc.collect()
 device = "cuda"
@@ -72,17 +71,12 @@ with open('ae/data/ffhq.pkl', 'rb') as f:
 # StyleFlow dataset
 nbr_of_attributes = 8
 all_w, all_a = load_dataset(keep=False, values=2, nbr_of_attributes=nbr_of_attributes)
-# del all_a
-# gc.collect()
 
 # AE Model
 model = AE_multiple_layers(input_shape=512, hidden_dim=512).to(device)
 criterion_w = torch.nn.MSELoss()
 criterion_a = torch.nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-4)
-
-# Only on gmum servers
-# model, optimizer = load_model('ae_models/model_e1_03_03_2023_16_40_29.pch', model, optimizer)
 
 # training params
 batch_size_train = 3
@@ -101,7 +95,7 @@ df = {
     'loss_a': [],
     'lambda_a': [],
     'lambda_pixel_loss': [],
-    'pixel_loss':[]
+    'pixel_loss': []
 }
 
 
@@ -121,7 +115,7 @@ def modify_reconstruction(reconstruction, nbr_of_attributes):
 
 for filename in os.listdir("ae_models/pixel_loss_v2"):
     epoch = int(filename.split("_")[1][1:])
-    lambda_pixel_loss = (epoch-1) * 0.05 + 0.15
+    lambda_pixel_loss = (epoch - 1) * 0.05 + 0.15
 
     model_name = filename
     model, _ = load_model(os.path.join("ae_models/pixel_loss_v2", filename), model, optimizer)

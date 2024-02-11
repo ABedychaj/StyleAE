@@ -1,9 +1,8 @@
-from itertools import chain
-from typing import List
-
 import torch
+from itertools import chain
 from torch import nn
 from torch.nn import functional as F
+from typing import List
 
 
 # TODO perhaps use the torchvision model instead (note the difference in the initial convolution)

@@ -1,16 +1,14 @@
-import os
-
 import cv2
-import pandas as pd
-import torch
-
+import face_recognition as fr
 import math
 import numpy as np
-from skimage.metrics import structural_similarity as ssim
-from skimage.metrics import peak_signal_noise_ratio as psnr
+import os
+import pandas as pd
+import torch
 import torch.nn.functional as F
-import face_recognition as fr
 from arcface import ArcFace
+from skimage.metrics import peak_signal_noise_ratio as psnr
+from skimage.metrics import structural_similarity as ssim
 
 
 def load_images_from_folder(folder, list_to_compare=None):

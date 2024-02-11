@@ -1,9 +1,9 @@
-import os
-
 import cv2
+import os
 import torch
 
-input_path = 'data/afhq/train/dog'
+# dataset path
+input_path = 'data/afhq/train/dog'  # change this to the path of your dataset
 
 
 def load_images_from_folder(folder):

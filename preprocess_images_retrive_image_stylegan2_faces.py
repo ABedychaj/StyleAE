@@ -1,19 +1,16 @@
-import os
-from time import perf_counter
-
-import numpy as np
-import torch.nn.functional as F
-import copy
-
-import dnnlib
-
-from GPUtil import showUtilization as gpu_usage
-from numba import cuda
-
 import PIL.Image
+import copy
+import gc
+import numpy as np
+import os
 import pickle
 import torch
-import gc
+import torch.nn.functional as F
+from GPUtil import showUtilization as gpu_usage
+from numba import cuda
+from time import perf_counter
+
+import dnnlib
 
 gc.collect()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

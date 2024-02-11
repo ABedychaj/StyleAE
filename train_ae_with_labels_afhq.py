@@ -72,8 +72,8 @@ criterion_w = torch.nn.MSELoss()
 criterion_a = torch.nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-5)
 
-# Only on gmum servers
-model, optimizer = load_model('ae_models/afhq_retrained_model_e86_24_04_2023_09_36_01.pch', model, optimizer)
+# load checkpoint
+# model, optimizer = load_model('<model checkpoint>', model, optimizer)
 
 # training params
 batch_size_train = 10

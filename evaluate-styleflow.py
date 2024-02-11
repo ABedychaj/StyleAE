@@ -1,19 +1,17 @@
-import os
-
-import numpy as np
-from sklearn.utils import shuffle
-from datetime import datetime
-from torch import optim
-from ae.utils import save_model, iterate_batches, load_model
-from ae.AutoEncoder import AE_single_layer, AE_multiple_layers, InvertibleAE, CholeskyAE, InvOrthogonalAE, DeepAE, \
-    relu_loss
-import pandas as pd
-
 import PIL.Image
+import gc
+import numpy as np
+import os
+import pandas as pd
 import pickle
 import torch
-import gc
+from datetime import datetime
+from sklearn.utils import shuffle
+from torch import optim
 
+from ae.AutoEncoder import AE_single_layer, AE_multiple_layers, InvertibleAE, CholeskyAE, InvOrthogonalAE, DeepAE, \
+    relu_loss
+from ae.utils import save_model, iterate_batches, load_model
 from styleflow.flow import cnf
 from styleflow.utils import load_dataset
 
@@ -92,7 +90,8 @@ def save_image(img, path):
 
 
 # Specify path
-path_output = 'ae/data/output_images_styleflow_beard_3'
+# example:
+path_output = 'ae/data/output_images_styleflow_beard'
 # path_input = 'ae/data/input_images_styleflow_glasses'
 
 if not os.path.exists(path_output):
@@ -136,7 +135,7 @@ transform_eval = transforms.Compose([
 ])
 
 net = ResNet18(num_classes=9).to(device)
-net.load_state_dict(torch.load(f"resnet18_sd_25012023.pt"))
+net.load_state_dict(torch.load(f"models/resnet18_sd_25012023.pt"))
 net.eval()
 
 sigm = nn.Sigmoid()

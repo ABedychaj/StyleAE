@@ -1,22 +1,21 @@
-import numpy as np
-from sklearn.utils import shuffle
-from datetime import datetime
-from torch import optim
-from ae.utils import load_dataset, save_model, iterate_batches, load_model
-from ae.AutoEncoder import AE_single_layer, AE_multiple_layers, InvertibleAE, CholeskyAE, InvOrthogonalAE, DeepAE, \
-    relu_loss
-import pandas as pd
-import os
 import PIL.Image
+import gc
+import numpy as np
+import os
+import pandas as pd
 import pickle
 import torch
-import gc
-
+from datetime import datetime
+from sklearn.utils import shuffle
 from torch import nn
+from torch import optim
 from torch.nn import functional as F
 from torchvision import transforms
 from torchvision.transforms import InterpolationMode
 
+from ae.AutoEncoder import AE_single_layer, AE_multiple_layers, InvertibleAE, CholeskyAE, InvOrthogonalAE, DeepAE, \
+    relu_loss
+from ae.utils import load_dataset, save_model, iterate_batches, load_model
 from resnets import ResNet18
 
 gc.collect()
@@ -167,6 +166,7 @@ def save_image(img, path):
 
 
 # Specify path
+# examples:
 path_output = 'ae/data/output_images_ae_naive_search_noglasses'
 path_diff = 'ae/data/diff_images_ae_naive_search_noglasses'
 # path_input = 'ae/data/input_images_ae_smile'
@@ -193,13 +193,11 @@ all_w, all_a = load_dataset(keep=False, values=2, nbr_of_attributes=nbr_of_attri
 model = AE_multiple_layers(input_shape=512, hidden_dim=512).to(device)
 optimizer = optim.Adam(model.parameters(), lr=1e-4)
 
-# Only on gmum servers
-model, optimizer = load_model('ae_models/pixel_loss_v1/model_e100_25_01_2023_04_06_16.pch', model, optimizer)
+model, optimizer = load_model('<path to model checkpoint>', model, optimizer)
 
 # training params
 batch_size_test = 1
 
-# all_w_tmp, all_a_tmp = shuffle(all_w[:9500], all_a[:9500])
 all_test_w, all_test_a = all_w[9900:], all_a[9900:]
 
 model.eval()
@@ -218,7 +216,7 @@ transform_eval = transforms.Compose([
 ])
 
 net = ResNet18(num_classes=9).to(device)
-net.load_state_dict(torch.load(f"resnet18_sd_25012023.pt"))
+net.load_state_dict(torch.load(f"models/resnet18_sd_25012023.pt"))
 net.eval()
 
 sigm = nn.Sigmoid()
@@ -273,5 +271,4 @@ df = pd.DataFrame(data, columns=columns)
 df.to_csv(f'{path_output}/summary_data_{dt_string}.csv', index=False)
 
 df_attrib = pd.DataFrame(attribs, columns=["name"] + titles)
-# df_attrib.to_csv(f'{path_input}/labels_from_ms_{dt_string}.csv', index=False)
-print(df)
+df_attrib.to_csv(f'{path_output}/summary_attribs_{dt_string}.csv', index=False)

@@ -1,8 +1,7 @@
 import numpy as np
 import os
-import pickle
-
 import pandas as pd
+import pickle
 import torch
 from PIL import Image
 
@@ -159,6 +158,7 @@ def label_record(x, n=1):
         return torch.tensor([[0.0] * n + [0.0] * n + [1.0] * n])
 
 
+# ae/data/afhq/train/* and ae/data/afhq/test/* are the paths to the training and testing datasets of retrieved `w` vectors
 def load_dataset_afhq(train=True, n=1):
     if train:
         with open("ae/data/afhq/train/cat_w.pkl", 'rb') as handle:
@@ -203,10 +203,3 @@ def load_dataset_afhq_for_faces(n=1):
     all_a = torch.stack([label_record(x, n) for x in all_a], dim=0)
 
     return all_w, all_a
-
-
-if __name__ == "__main__":
-    w, a = load_dataset_afhq_for_faces(n=1)
-    print(w.shape)
-    # print(len(w))
-    # print(a[0].shape)

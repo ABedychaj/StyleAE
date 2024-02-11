@@ -1,17 +1,16 @@
-from random import shuffle
-from datetime import datetime
-from torch import optim
-from ae.utils import load_dataset, save_model
-from ae.AutoEncoder import AE_single_layer, AE_multiple_layers
-import pandas as pd
-
-from GPUtil import showUtilization as gpu_usage
-from numba import cuda
-
 import PIL.Image
+import gc
+import pandas as pd
 import pickle
 import torch
-import gc
+from GPUtil import showUtilization as gpu_usage
+from datetime import datetime
+from numba import cuda
+from random import shuffle
+from torch import optim
+
+from ae.AutoEncoder import AE_single_layer, AE_multiple_layers
+from ae.utils import load_dataset, save_model
 
 gc.collect()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -47,7 +46,7 @@ def generate_images_in_w_space(w, batch_size=32):
         img = G.synthesis(w.reshape(batch_size, w.shape[2], w.shape[3]), noise_mode='const')
     else:
         img = G.synthesis(w.reshape(batch_size, w.shape[2], w.shape[3]), noise_mode='const',
-                      force_fp32=True)
+                          force_fp32=True)
     return img
 
 

@@ -1,28 +1,25 @@
-import os
-
-import numpy as np
-from sklearn.utils import shuffle
-from datetime import datetime
-from torch import optim
-from ae.utils import save_model, iterate_batches, load_model
-from ae.AutoEncoder import AE_single_layer, AE_multiple_layers, InvertibleAE, CholeskyAE, InvOrthogonalAE, DeepAE, \
-    relu_loss
-import pandas as pd
-
 import PIL.Image
+import gc
+import numpy as np
+import os
+import pandas as pd
 import pickle
 import torch
-import gc
-
-from styleflow.NICE import NiceFlow
-from styleflow.flow import cnf
-from styleflow.utils import load_dataset
+from datetime import datetime
+from sklearn.utils import shuffle
 from torch import nn
+from torch import optim
 from torch.nn import functional as F
 from torchvision import transforms
 from torchvision.transforms import InterpolationMode
 
+from ae.AutoEncoder import AE_single_layer, AE_multiple_layers, InvertibleAE, CholeskyAE, InvOrthogonalAE, DeepAE, \
+    relu_loss
+from ae.utils import save_model, iterate_batches, load_model
 from resnets import ResNet18
+from styleflow.NICE import NiceFlow
+from styleflow.flow import cnf
+from styleflow.utils import load_dataset
 
 gc.collect()
 device = "cuda"
@@ -173,6 +170,7 @@ def save_image(img, path):
 
 
 # Specify path
+# example: path_output = 'ae/data/output_images_plugen_glasses_naive_select/'
 path_output = 'ae/data/output_images_plugen_glasses_naive_select/'
 
 if not os.path.exists(path_output):
@@ -189,7 +187,7 @@ all_w, all_a = load_dataset(keep=False, values=[0] * 17)
 
 layers = "-".join(["512"] * 4)
 prior = NiceFlow(input_dim=512, n_layers=4, n_couplings=4, hidden_dim=512)
-prior.load_state_dict(torch.load(f"stylegan_plugen.pch")["model"])
+prior.load_state_dict(torch.load(f"models/stylegan_plugen.pch")["model"])
 
 all_test_w, all_test_a = all_w[9900:], all_a[9900:]
 batch_size_test = 1
@@ -208,7 +206,7 @@ transform_eval = transforms.Compose([
 ])
 
 net = ResNet18(num_classes=9).to(device)
-net.load_state_dict(torch.load(f"resnet18_sd_25012023.pt"))
+net.load_state_dict(torch.load(f"models/resnet18_sd_25012023.pt"))
 net.eval()
 
 sigm = nn.Sigmoid()
